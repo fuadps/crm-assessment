@@ -70,6 +70,12 @@ export default function Dashboard({ auth }) {
                                             >
                                                 Website
                                             </th>
+                                            <th
+                                                scope="col"
+                                                className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell"
+                                            >
+                                                Total Employees
+                                            </th>
                                             <th scope="col" className="relative py-3.5 pl-3">
                                                 <span className="sr-only">Edit</span>
                                             </th>
@@ -86,6 +92,7 @@ export default function Dashboard({ auth }) {
                                                 <td className="hidden px-3 py-4 text-sm text-gray-500 md:table-cell">{company.email}</td>
                                                 <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">{company.address}</td>
                                                 <td className="px-3 py-4 text-sm text-gray-500">{company.website}</td>
+                                                <td className="px-3 py-4 text-sm text-gray-500">{company.employees_count}</td>
                                                 <td className="relative py-4 pl-3 text-right text-sm font-medium">
                                                     <Link href={route('companies.edit', company.id)} className="text-indigo-600 hover:text-indigo-900 mr-2">
                                                         Edit<span className="sr-only">, {company.name}</span>

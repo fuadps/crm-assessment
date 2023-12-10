@@ -1,12 +1,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {Head, Link, useForm, usePage} from '@inertiajs/react';
+import {Head, Link, router, useForm, usePage} from '@inertiajs/react';
 import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import {Transition} from "@headlessui/react";
+import DangerButton from "@/Components/DangerButton.jsx";
+import Pagination from "@/Components/Pagination.jsx";
 
-export default function Edit({ auth, company }) {
+export default function Edit({ auth, company, employees }) {
     const { data, setData, patch, post, errors, processing, recentlySuccessful } = useForm({
         name: company.name,
         email: company.email,
@@ -23,6 +25,13 @@ export default function Edit({ auth, company }) {
         else
             post(route('companies.store'));
     };
+
+    const handleDelete = (employee) => {
+        if(! confirm('Are you sure you want to delete this?'))
+            return
+
+        router.delete(route('employees.destroy', employee.id))
+    }
 
     return (
         <AuthenticatedLayout
@@ -101,6 +110,20 @@ export default function Edit({ auth, company }) {
                                 <InputError className="mt-2" message={errors.website} />
                             </div>
 
+                            <div>
+                                <InputLabel htmlFor="logo" value="Logo" />
+
+                                <input
+                                    id="logo"
+                                    type="file"
+                                    className="mt-1 block w-full"
+                                    value={data.logo}
+                                    onChange={(e) => setData('logo', e.target.files[0])}
+                                />
+
+                                <InputError className="mt-2" message={errors.logo} />
+                            </div>
+
                             <div className="flex items-center gap-4">
                                 <PrimaryButton disabled={processing}>Save</PrimaryButton>
 
@@ -116,6 +139,95 @@ export default function Edit({ auth, company }) {
                             </div>
                         </form>
                     </div>
+
+                    {company.id && (
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg px-4 py-6 mt-8">
+                            <div>
+                                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                                    <div className="sm:flex sm:items-center">
+                                        <div className="sm:flex-auto">
+                                            <p className="mt-2 text-sm text-gray-700">
+                                                A list of all the employees in the {company.name}.
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                                            <Link
+                                                href={route('employees.create')}
+                                                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            >
+                                                Add New Employee
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-8 flow-root overflow-hidden">
+                                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                                        <table className="w-full text-left">
+                                            <thead className="bg-white">
+                                            <tr>
+                                                <th scope="col" className="relative isolate py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
+                                                    First Name
+                                                    <div className="absolute inset-y-0 right-full -z-10 w-screen border-b border-b-gray-200" />
+                                                    <div className="absolute inset-y-0 left-0 -z-10 w-screen border-b border-b-gray-200" />
+                                                </th>
+
+                                                <th scope="col" className="relative isolate py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
+                                                    Last Name
+                                                    <div className="absolute inset-y-0 right-full -z-10 w-screen border-b border-b-gray-200" />
+                                                    <div className="absolute inset-y-0 left-0 -z-10 w-screen border-b border-b-gray-200" />
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+                                                >
+                                                    Email
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell"
+                                                >
+                                                    Phone
+                                                </th>
+                                                <th scope="col" className="relative py-3.5 pl-3">
+                                                    <span className="sr-only">Edit</span>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {employees.map((employee) => (
+                                                <tr key={employee.email}>
+                                                    <td className="relative py-4 pr-3 text-sm font-medium text-gray-900">
+                                                        {employee.first_name}
+                                                    </td>
+                                                    <td className="hidden px-3 py-4 text-sm text-gray-500 md:table-cell">{employee.last_name}</td>
+                                                    <td className="px-3 py-4 text-sm text-gray-500">{employee.email}</td>
+                                                    <td className="px-3 py-4 text-sm text-gray-500">{employee.phone}</td>
+                                                    <td className="relative py-4 pl-3 text-right text-sm font-medium">
+                                                        <Link href={route('employees.edit', employee.id)} className="text-indigo-600 hover:text-indigo-900 mr-2">
+                                                            Edit<span className="sr-only">, {employee.first_name}</span>
+                                                        </Link>
+
+                                                        <DangerButton onClick={() => handleDelete(employee)}>
+                                                            Delete<span className="sr-only">, {employee.first_name}</span>
+                                                        </DangerButton>
+                                                    </td>
+                                                </tr>
+                                            ))}
+
+                                            {!employees.length && (
+                                                <>
+                                                    <tr>
+                                                        <td colSpan="5" className="text-center px-3 py-4 text-sm text-gray-500 sm:table-cell">No record(s)</td>
+                                                    </tr>
+                                                </>
+                                            )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -11,7 +11,7 @@ class CompanyController extends Controller
     public function index()
     {
         return Inertia::render('Company/Index', [
-            'companies' => Company::query()->paginate(10),
+            'companies' => Company::query()->withCount('employees')->paginate(10),
         ]);
     }
 
@@ -19,6 +19,7 @@ class CompanyController extends Controller
     {
         return Inertia::render('Company/Form', [
             'company' => new Company,
+            'employees' => [],
         ]);
     }
 
@@ -36,13 +37,14 @@ class CompanyController extends Controller
 
     public function show(Company $company)
     {
-        return Inertia::render('Company/Show');
+        return redirect()->route('companies.edit');
     }
 
     public function edit(Company $company)
     {
         return Inertia::render('Company/Form', [
             'company' => $company,
+            'employees' => $company->employees,
         ]);
     }
 
