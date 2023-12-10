@@ -9,6 +9,7 @@
 7. Run `php db:seed --class="AdminSeeder"` to seed admin.
 8. Run `npm install` & `npm run build`
 9. Run `php artisan serve`
+10. Visit http://127.0.0.1:8000 to login
 
 Credentials
 
