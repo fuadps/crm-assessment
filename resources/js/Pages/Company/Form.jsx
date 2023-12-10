@@ -9,6 +9,7 @@ import DangerButton from "@/Components/DangerButton.jsx";
 import Pagination from "@/Components/Pagination.jsx";
 
 export default function Edit({ auth, company, employees }) {
+    console.log(company)
     const { data, setData, patch, post, errors, processing, recentlySuccessful } = useForm({
         name: company.name,
         email: company.email,
@@ -113,11 +114,15 @@ export default function Edit({ auth, company, employees }) {
                             <div>
                                 <InputLabel htmlFor="logo" value="Logo" />
 
+                                {company.logo && (
+                                    <img src={ '/storage/' + company.logo } alt="logo"/>
+                                )}
+
                                 <input
                                     id="logo"
                                     type="file"
                                     className="mt-1 block w-full"
-                                    value={data.logo}
+                                    // value={data.logo}
                                     onChange={(e) => setData('logo', e.target.files[0])}
                                 />
 

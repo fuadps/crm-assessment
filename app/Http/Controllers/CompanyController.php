@@ -28,7 +28,7 @@ class CompanyController extends Controller
         $input = $request->validate($this->validationRules());
 
         if($request->hasFile('logo'))
-            $input['logo'] = $request->logo->store();
+            $input['logo'] = $request->logo->store('', 'public');
 
         $company = Company::create($input);
 
@@ -53,7 +53,7 @@ class CompanyController extends Controller
         $input = $request->validate($this->validationRules());
 
         if($request->hasFile('logo'))
-            $input['logo'] = $request->logo->store();
+            $input['logo'] = $request->logo->store('', 'public');
 
         $company->update($input);
 
