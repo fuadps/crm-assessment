@@ -22,7 +22,10 @@ export default function Edit({ auth, company, employees }) {
         e.preventDefault();
 
         if(company.id)
-            patch(route('companies.update', company.id));
+            router.post(route('companies.update', company.id), {
+                _method: 'patch ',
+                ...data,
+            })
         else
             post(route('companies.store'));
     };
